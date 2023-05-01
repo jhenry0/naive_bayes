@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.1/full/pyodide.js"></script>
+
+    <!-- Responsivivdade -->
+    <style>
+        .textinput {
+            float: left;
+            width: 100%;
+            min-height: 75px;
+            outline: none;
+            resize: none;
+            border: 1px solid grey;
+        }
+        .responsive {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+    
+    <!-- Responsivivdade -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>Naive Bayes trainer</title>
+    
+    <meta name="apple-mobile-web-app-status-bar" content="#aa7700">
+    <meta name="theme-color" content="black">
+    
+    <!-- Manifest.json
+    <link rel="manifest" href="manifest.json"> -->
+  </head>
+
+  <body>
+    <label for="Dados">Insira seu banco de dados aqui:</label>
+
+    <input type="file"
+           id="Dados" name="Dados"
+           accept=".csv">
+
+    <input value="Treinar" type="submit" onclick="treinar()"/>
+
+
+    <script>
+        
+        // Pyodide - Init
+        async function main() {
+            let pyodide = await loadPyodide();
+            console.log("working");
+            return pyodide;
+        }
+        let pyodideReadyPromise = main();
+        
+        // Pyodide - carregar arquivos e executar chamada
+        async function evaluatePython() {
+            let pyodide = await pyodideReadyPromise;
+            try {
+                let python_code = (await (await fetch('naive_bayes.py')).text());
+                pyodide.runPython(python_code);
+                let output = pyodide.runPython();
+            } catch (err) {
+                console.log(err)
+            }
+        }
+
+        function treinar() {
+            const file = document.querySelector("#Dados").files[0];
+            const fileReader = new FileReader();
+            fileReader.readAsText(file);
+
+            fileReader.onload = function() {
+                let result = document.createElement("div");
+                result.innerHTML = "<p style='display:none' id='result'>"+fileReader.result+"</p>";
+                document.body.append(result);
+            };
+
+            evaluatePython();
+
+    
+        }
+    </script>
+
+    <!-- PWA 
+    <script>
+        window.addEventListener('load', () => {
+            registerSW();
+        });
+
+        // Registro do Service Worker
+        async function registerSW() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator
+                            .serviceWorker
+                            .register('serviceworker.js');
+                }
+                catch (e) {
+                    console.log('SW registration failed');
+                }
+            }
+        }
+    </script>
+    -->
+
+  </body>
+</html>
