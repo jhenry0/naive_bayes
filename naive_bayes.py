@@ -3,6 +3,7 @@ import random
 import math
 import js
 
+
 def loadCsv(csv):
 	dataset = list(csv)
 	for i in range(len(dataset)):
