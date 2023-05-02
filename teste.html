@@ -41,6 +41,7 @@
            accept=".csv">
 
     <input value="Treinar" type="submit" onclick="treinar()"/>
+    <button onclick="teste1()">testar</button>
 
 
     <script>
@@ -57,7 +58,18 @@
         async function evaluatePython() {
             let pyodide = await pyodideReadyPromise;
             try {
-                let python_code = (await (await fetch('naive_bayes.py')).text());
+                let python_code = (await (await fetch('trainer.py')).text());
+                pyodide.runPython(python_code);
+                let output = pyodide.runPython();
+            } catch (err) {
+                console.log(err)
+            }
+        }
+
+        async function teste() {
+            let pyodide = await pyodideReadyPromise;
+            try {
+                let python_code = (await (await fetch('main.py')).text());
                 pyodide.runPython(python_code);
                 let output = pyodide.runPython();
             } catch (err) {
@@ -79,6 +91,10 @@
             evaluatePython();
 
     
+        }
+
+        function teste1() {
+            teste();
         }
     </script>
 

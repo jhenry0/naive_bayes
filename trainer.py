@@ -2,12 +2,19 @@ import csv
 import random
 import math
 import js
+import json
 
 
-def loadCsv(csv):
-	dataset = list(csv)
+def loadCsv(data):
+	csvfile = open ("csv_temp.csv", "w")
+	csvfile.write(data)
+	csvfile.close()
+	csvfile = open ("csv_temp.csv", "r")
+	lines = csv.reader(csvfile)
+	dataset = list(lines)
 	for i in range(len(dataset)):
 		dataset[i] = [float(x) for x in dataset[i]]
+	csvfile.close()
 	return dataset
  
 def splitDataset(dataset, splitRatio):
@@ -86,18 +93,17 @@ def getAccuracy(testSet, predictions):
 	return (correct/float(len(testSet))) * 100.0
 
 
-csv = js.document.getElementById("result").textContent
+data = js.document.getElementById("result").textContent
 
 
-splitRatio = 0.67
-dataset = loadCsv(csv)
+splitRatio = 1
+dataset = loadCsv(data)
 trainingSet, testSet = splitDataset(dataset, splitRatio)
-print('Split {0} rows into train={1} and test={2} rows'.format(len(dataset), len(trainingSet), len(testSet)))
 
 summaries = summarizeByClass(trainingSet)
-print('Summary by class value: {0}'.format(summaries))
 
-inputVector = [9,0,64,0,0,24,0.670,25,'?']
-result = predict(summaries, inputVector)
-print('Prediction: {0}'.format(result)) 
+with open("json_temp.json", "w") as outfile:
+    json.dump(summaries, outfile)
+
+
 
