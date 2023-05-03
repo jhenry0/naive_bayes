@@ -77,20 +77,6 @@ def predict(summaries, inputVector):
 			bestProb = probability
 			bestLabel = classValue
 	return bestLabel
- 
-def getPredictions(summaries, testSet):
-	predictions = []
-	for i in range(len(testSet)):
-		result = predict(summaries, testSet[i])
-		predictions.append(result)
-	return predictions
- 
-def getAccuracy(testSet, predictions):
-	correct = 0
-	for i in range(len(testSet)):
-		if testSet[i][-1] == predictions[i]:
-			correct += 1
-	return (correct/float(len(testSet))) * 100.0
 
 
 data = js.document.getElementById("result").textContent
@@ -105,5 +91,5 @@ summaries = summarizeByClass(trainingSet)
 with open("json_temp.json", "w") as outfile:
     json.dump(summaries, outfile)
 
-
+js.document.getElementById("result").remove()
 

@@ -27,9 +27,20 @@ def predict(summaries, inputVector):
 
 with open('json_temp.json') as json_file:
     data = json.load(json_file)
+    input = js.document.querySelector("#predicao").value
+    inputVector = input.split(",")
 
-    print(data)
-
-    inputVector = [6,148,72,35,0,33.6,0.627,50,'?']
+    for x in range(len(inputVector)):
+	    inputVector[x] = float(inputVector[x])
+	 
+    inputVector.append("?")
     result = predict(data, inputVector)
     print('Prediction: {0}'.format(result)) 
+
+    html = js.document.querySelector(".predicao")
+    if not html:
+        html = js.document.createElement("div")
+        html.classList.add("predicao")
+        html.innerHTML = "<p>A prediçao é: "+ result+"</p>"
+        js.document.body.append(html)  
+    html.innerHTML = "<p>A prediçao é: "+ result+"</p>"

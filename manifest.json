@@ -1,0 +1,10 @@
+{
+	"name":"Treinador de Naive Bayes",
+	"short_name":"Trainer",
+	"start_url":"index.html",
+	"display":"standalone",
+	"background_color":"#ffffff",
+	"theme_color":"black",
+	"scope": ".",
+	"description":"Apenas um humilde treinador de naive bayes uai"
+}

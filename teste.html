@@ -29,8 +29,8 @@
     <meta name="apple-mobile-web-app-status-bar" content="#aa7700">
     <meta name="theme-color" content="black">
     
-    <!-- Manifest.json
-    <link rel="manifest" href="manifest.json"> -->
+    <!-- Manifest.json -->
+    <link rel="manifest" href="manifest.json">
   </head>
 
   <body>
@@ -41,7 +41,11 @@
            accept=".csv">
 
     <input value="Treinar" type="submit" onclick="treinar()"/>
-    <button onclick="teste1()">testar</button>
+    
+    <p>Para criar uma prediçao digite as caracteristicas separadas por virgula.</p>
+    <label for="Teste">Digite as caracteristicas para saber a predição:</label>
+    <input type="text"id="predicao" name="predicao">
+    <button onclick="predict()">testar</button>
 
 
     <script>
@@ -55,7 +59,7 @@
         let pyodideReadyPromise = main();
         
         // Pyodide - carregar arquivos e executar chamada
-        async function evaluatePython() {
+        async function pyTrainer() {
             let pyodide = await pyodideReadyPromise;
             try {
                 let python_code = (await (await fetch('trainer.py')).text());
@@ -66,7 +70,7 @@
             }
         }
 
-        async function teste() {
+        async function pyPredict() {
             let pyodide = await pyodideReadyPromise;
             try {
                 let python_code = (await (await fetch('main.py')).text());
@@ -88,17 +92,17 @@
                 document.body.append(result);
             };
 
-            evaluatePython();
+            pyTrainer();
 
     
         }
 
-        function teste1() {
-            teste();
+        function predict() {
+            pyPredict();
         }
     </script>
 
-    <!-- PWA 
+    <!-- PWA -->
     <script>
         window.addEventListener('load', () => {
             registerSW();
@@ -113,12 +117,12 @@
                             .register('serviceworker.js');
                 }
                 catch (e) {
-                    console.log('SW registration failed');
+                    console.log(e);
                 }
             }
         }
     </script>
-    -->
+    
  
   </body>
 </html>
