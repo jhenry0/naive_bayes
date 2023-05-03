@@ -64,7 +64,6 @@
             try {
                 let python_code = (await (await fetch('trainer.py')).text());
                 pyodide.runPython(python_code);
-                let output = pyodide.runPython();
             } catch (err) {
                 console.log(err)
             }
@@ -75,7 +74,6 @@
             try {
                 let python_code = (await (await fetch('main.py')).text());
                 pyodide.runPython(python_code);
-                let output = pyodide.runPython();
             } catch (err) {
                 console.log(err)
             }
