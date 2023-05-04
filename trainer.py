@@ -1,14 +1,14 @@
 import csv
-import random
 import math
-import js
+from js import result
 import json
 
-
-def loadCsv(data):
+def saveCsv(data):
 	csvfile = open ("csv_temp.csv", "w")
 	csvfile.write(data)
 	csvfile.close()
+
+def loadCsv():
 	csvfile = open ("csv_temp.csv", "r")
 	lines = csv.reader(csvfile)
 	dataset = list(lines)
@@ -16,15 +16,6 @@ def loadCsv(data):
 		dataset[i] = [float(x) for x in dataset[i]]
 	csvfile.close()
 	return dataset
- 
-def splitDataset(dataset, splitRatio):
-	trainSize = int(len(dataset) * splitRatio)
-	trainSet = []
-	copy = list(dataset)
-	while len(trainSet) < trainSize:
-		index = random.randrange(len(copy))
-		trainSet.append(copy.pop(index))
-	return [trainSet, copy]
  
 def separateByClass(dataset):
 	separated = {}
@@ -78,18 +69,10 @@ def predict(summaries, inputVector):
 			bestLabel = classValue
 	return bestLabel
 
+saveCsv(result)
+dataset = loadCsv()
 
-data = js.document.getElementById("result").textContent
-
-
-splitRatio = 1
-dataset = loadCsv(data)
-trainingSet, testSet = splitDataset(dataset, splitRatio)
-
-summaries = summarizeByClass(trainingSet)
+summaries = summarizeByClass(dataset)
 
 with open("json_temp.json", "w") as outfile:
     json.dump(summaries, outfile)
-
-js.document.getElementById("result").remove()
-

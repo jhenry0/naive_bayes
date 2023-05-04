@@ -57,11 +57,17 @@
             return pyodide;
         }
         let pyodideReadyPromise = main();
-        
-        // Pyodide - carregar arquivos e executar chamada
+
+        // Pyodide - preparando chamada para codigo de treinamento
         async function pyTrainer() {
             let pyodide = await pyodideReadyPromise;
             try {
+                const file = document.querySelector("#Dados").files[0];
+                const fileReader = new FileReader();
+                fileReader.readAsText(file);
+                fileReader.onload = function() {
+                    globalThis.result = fileReader.result;
+                };
                 let python_code = (await (await fetch('trainer.py')).text());
                 pyodide.runPython(python_code);
             } catch (err) {
@@ -69,35 +75,38 @@
             }
         }
 
+        // Pyodide - preparando chamada para codigo de predição
         async function pyPredict() {
             let pyodide = await pyodideReadyPromise;
             try {
                 let python_code = (await (await fetch('main.py')).text());
                 pyodide.runPython(python_code);
+                const result = pyodide.globals.get("result");
+                let predicao = document.querySelector(".predicao")
+                if (!predicao){
+                    predicao = document.createElement("div")
+                    predicao.classList.add("predicao")
+                    predicao.innerHTML = "<p>A prediçao é: "+ result+"</p>"
+                    document.body.append(predicao)  
+                }
+                predicao.innerHTML = "<p>A prediçao é: "+ result+"</p>"
             } catch (err) {
                 console.log(err)
             }
         }
 
+        // Chamada para treinamento
         function treinar() {
-            const file = document.querySelector("#Dados").files[0];
-            const fileReader = new FileReader();
-            fileReader.readAsText(file);
-
-            fileReader.onload = function() {
-                let result = document.createElement("div");
-                result.innerHTML = "<p style='display:none' id='result'>"+fileReader.result+"</p>";
-                document.body.append(result);
-            };
-
             pyTrainer();
-
-    
         }
 
+        // Chamada para predição
         function predict() {
             pyPredict();
         }
+
+        
+
     </script>
 
     <!-- PWA -->

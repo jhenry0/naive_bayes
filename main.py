@@ -26,21 +26,12 @@ def predict(summaries, inputVector):
 	return bestLabel
 
 with open('json_temp.json') as json_file:
-    data = json.load(json_file)
-    input = js.document.querySelector("#predicao").value
-    inputVector = input.split(",")
+	data = json.load(json_file)
+	input = js.document.querySelector("#predicao").value
+	inputVector = input.split(",")
 
-    for x in range(len(inputVector)):
-	    inputVector[x] = float(inputVector[x])
-	 
-    inputVector.append("?")
-    result = predict(data, inputVector)
-    print('Prediction: {0}'.format(result)) 
+	for x in range(len(inputVector)):
+		inputVector[x] = float(inputVector[x])
 
-    html = js.document.querySelector(".predicao")
-    if not html:
-        html = js.document.createElement("div")
-        html.classList.add("predicao")
-        html.innerHTML = "<p>A prediçao é: "+ result+"</p>"
-        js.document.body.append(html)  
-    html.innerHTML = "<p>A prediçao é: "+ result+"</p>"
+	inputVector.append("?")
+	result = predict(data, inputVector)
