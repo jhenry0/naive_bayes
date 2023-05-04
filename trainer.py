@@ -1,6 +1,6 @@
 import csv
 import math
-from js import file
+from js import result
 import json
 
 def saveCsv(data):
@@ -69,7 +69,7 @@ def predict(summaries, inputVector):
 			bestLabel = classValue
 	return bestLabel
 
-saveCsv(file)
+saveCsv(result)
 dataset = loadCsv()
 
 summaries = summarizeByClass(dataset)
