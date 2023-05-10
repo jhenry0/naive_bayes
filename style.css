@@ -1,0 +1,33 @@
+.textinput {
+    float: left;
+    width: 100%;
+    min-height: 75px;
+    outline: none;
+    resize: none;
+    border: 1px solid grey;
+}
+
+.responsive {
+    width: 100%;
+    height: auto;
+}
+
+.training-data-input {
+    display: none;
+}
+
+.training-data-label {
+    padding: 1rem 0.5rem;
+    background-color: #ccc;
+    display: flex;
+    max-width: 10rem;
+    border-radius: 1rem;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 500ms;
+}
+
+.training-data-label:hover {
+    background-color: #aaa;
+}
