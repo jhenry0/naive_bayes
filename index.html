@@ -1,135 +1,133 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
   <head>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.1/full/pyodide.js"></script>
 
-    <!-- Responsivivdade -->
-    <style>
-        .textinput {
-            float: left;
-            width: 100%;
-            min-height: 75px;
-            outline: none;
-            resize: none;
-            border: 1px solid grey;
-        }
-        .responsive {
-            width: 100%;
-            height: auto;
-        }
-    </style>
-    
-    <!-- Responsivivdade -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
+
     <title>Naive Bayes trainer</title>
-    
-    <meta name="apple-mobile-web-app-status-bar" content="#aa7700">
-    <meta name="theme-color" content="black">
-    
+
+    <meta name="apple-mobile-web-app-status-bar" content="#aa7700" />
+    <meta name="theme-color" content="black" />
+
     <!-- Manifest.json -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json" />
   </head>
 
   <body>
-    <label for="Dados">Insira seu banco de dados aqui:</label>
+    <h2 for="Dados">Insira seu banco de dados para proseguir:</h2>
 
-    <input type="file"
-           id="Dados" name="Dados"
-           accept=".csv">
+    <input
+      type="file"
+      id="Dados"
+      name="Dados"
+      accept=".csv"
+      class="training-data-input"
+      onchange="setFileName()"
+    />
+    <p id="training-data-file-name"></p>
+    <label for="Dados" class="training-data-label">Inserir dados</label>
+    <br />
+    <input
+      value="Treinar"
+      type="submit"
+      id="training-data-test-button"
+      onclick="treinar()"
+      disabled="true"
+    />
 
-    <input value="Treinar" type="submit" onclick="treinar()"/>
-    
-    <p>Para criar uma prediçao digite as caracteristicas separadas por virgula.</p>
+    <p>
+      Para criar uma prediçao digite as caracteristicas separadas por virgula.
+    </p>
     <label for="Teste">Digite as caracteristicas para saber a predição:</label>
-    <input type="text"id="predicao" name="predicao">
+    <input type="text" id="predicao" name="predicao" />
     <button onclick="predict()">testar</button>
 
+    <script>
+      hasTrainingData = () => !!document.querySelector("#Dados").files[0];
+      setFileName = () => {
+        document.getElementById("training-data-file-name").innerHTML =
+          document.querySelector("#Dados").files[0].name;
+        document.getElementById("training-data-test-button").disabled = false;
+      };
+    </script>
 
     <script>
-        
-        // Pyodide - Init
-        async function main() {
-            let pyodide = await loadPyodide();
-            console.log("working");
-            return pyodide;
+      // Pyodide - Init
+      async function main() {
+        let pyodide = await loadPyodide();
+        console.log("working");
+        return pyodide;
+      }
+      let pyodideReadyPromise = main();
+
+      // Pyodide - preparando chamada para codigo de treinamento
+      async function pyTrainer() {
+        let pyodide = await pyodideReadyPromise;
+        try {
+          const file = document.querySelector("#Dados").files[0];
+          const fileReader = new FileReader();
+          fileReader.readAsText(file);
+          fileReader.onload = function () {
+            globalThis.result = fileReader.result;
+          };
+          let python_code = await (await fetch("trainer.py")).text();
+          pyodide.runPython(python_code);
+        } catch (err) {
+          console.log(err);
         }
-        let pyodideReadyPromise = main();
+      }
 
-        // Pyodide - preparando chamada para codigo de treinamento
-        async function pyTrainer() {
-            let pyodide = await pyodideReadyPromise;
-            try {
-                const file = document.querySelector("#Dados").files[0];
-                const fileReader = new FileReader();
-                fileReader.readAsText(file);
-                fileReader.onload = function() {
-                    globalThis.result = fileReader.result;
-                };
-                let python_code = (await (await fetch('trainer.py')).text());
-                pyodide.runPython(python_code);
-            } catch (err) {
-                console.log(err)
-            }
+      // Pyodide - preparando chamada para codigo de predição
+      async function pyPredict() {
+        let pyodide = await pyodideReadyPromise;
+        try {
+          let python_code = await (await fetch("main.py")).text();
+          pyodide.runPython(python_code);
+          const result = pyodide.globals.get("result");
+          let predicao = document.querySelector(".predicao");
+          if (!predicao) {
+            predicao = document.createElement("div");
+            predicao.classList.add("predicao");
+            predicao.innerHTML = "<p>A prediçao é: " + result + "</p>";
+            document.body.append(predicao);
+          }
+          predicao.innerHTML = "<p>A prediçao é: " + result + "</p>";
+        } catch (err) {
+          console.log(err);
         }
+      }
 
-        // Pyodide - preparando chamada para codigo de predição
-        async function pyPredict() {
-            let pyodide = await pyodideReadyPromise;
-            try {
-                let python_code = (await (await fetch('main.py')).text());
-                pyodide.runPython(python_code);
-                const result = pyodide.globals.get("result");
-                let predicao = document.querySelector(".predicao")
-                if (!predicao){
-                    predicao = document.createElement("div")
-                    predicao.classList.add("predicao")
-                    predicao.innerHTML = "<p>A prediçao é: "+ result+"</p>"
-                    document.body.append(predicao)  
-                }
-                predicao.innerHTML = "<p>A prediçao é: "+ result+"</p>"
-            } catch (err) {
-                console.log(err)
-            }
-        }
+      // Chamada para treinamento
+      function treinar() {
+        pyTrainer();
+      }
 
-        // Chamada para treinamento
-        function treinar() {
-            pyTrainer();
-        }
-
-        // Chamada para predição
-        function predict() {
-            pyPredict();
-        }
-
-        
-
+      // Chamada para predição
+      function predict() {
+        pyPredict();
+      }
     </script>
 
     <!-- PWA -->
     <script>
-        window.addEventListener('load', () => {
-            registerSW();
-        });
+      window.addEventListener("load", () => {
+        registerSW();
+      });
 
-        // Registro do Service Worker
-        async function registerSW() {
-            if ('serviceWorker' in navigator) {
-                try {
-                    await navigator
-                            .serviceWorker
-                            .register('serviceworker.js');
-                }
-                catch (e) {
-                    console.log(e);
-                }
-            }
+      // Registro do Service Worker
+      async function registerSW() {
+        if ("serviceWorker" in navigator) {
+          try {
+            await navigator.serviceWorker.register("serviceworker.js");
+          } catch (e) {
+            console.log(e);
+          }
         }
+      }
     </script>
-    
- 
   </body>
 </html>
