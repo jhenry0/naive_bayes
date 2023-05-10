@@ -1,3 +1,7 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .textinput {
     float: left;
     width: 100%;
@@ -16,8 +20,11 @@
     display: none;
 }
 
-.training-data-label {
-    padding: 1rem 0.5rem;
+.training-data-label,
+.training-data-test-button,
+button {
+    font-size: 0.875rem;
+    padding: 1rem 2rem;
     background-color: #ccc;
     display: flex;
     max-width: 10rem;
@@ -26,8 +33,23 @@
     align-items: center;
     cursor: pointer;
     transition: 500ms;
+    border: none;
 }
 
 .training-data-label:hover {
     background-color: #aaa;
+}
+
+.training-data-file-name {
+    font-weight: bold;
+}
+
+.error-message {
+    color: tomato;
+    font-weight: bold;
+}
+
+.success-message {
+    color: green;
+    font-weight: bold;
 }

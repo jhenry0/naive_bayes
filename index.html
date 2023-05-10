@@ -28,30 +28,49 @@
       class="training-data-input"
       onchange="setFileName()"
     />
-    <p id="training-data-file-name"></p>
     <label for="Dados" class="training-data-label">Inserir dados</label>
-    <br />
+    <p id="training-data-file-name" class="training-data-file-name"></p>
     <input
       value="Treinar"
       type="submit"
       id="training-data-test-button"
       onclick="treinar()"
       disabled="true"
+      class="training-data-test-button"
     />
-
+    <p class="success-message" id="successful-training-message"></p>
+    <p class="error-message" id="error-training-message"></p>
     <p>
       Para criar uma prediçao digite as caracteristicas separadas por virgula.
     </p>
     <label for="Teste">Digite as caracteristicas para saber a predição:</label>
-    <input type="text" id="predicao" name="predicao" />
-    <button onclick="predict()">testar</button>
+    <input
+      type="text"
+      id="predicao"
+      name="predicao"
+      onchange="changePredictionValue(event)"
+    />
+    <button onclick="predict()" disabled="true" id="test-data-button">
+      Testar
+    </button>
+    <p id="error-message" class="error-message"></p>
 
     <script>
+      let testValue = "";
+      getTestValue = () => testValue();
       hasTrainingData = () => !!document.querySelector("#Dados").files[0];
       setFileName = () => {
-        document.getElementById("training-data-file-name").innerHTML =
-          document.querySelector("#Dados").files[0].name;
+        document.getElementById(
+          "training-data-file-name"
+        ).innerHTML = `Arquivo: ${
+          document.querySelector("#Dados").files[0].name
+        }`;
         document.getElementById("training-data-test-button").disabled = false;
+      };
+      changePredictionValue = (e) => {
+        document.getElementById("predicao").value = String(
+          e.target.value.replace(/[^\d,.]/g, "")
+        );
       };
     </script>
 
@@ -76,7 +95,12 @@
           };
           let python_code = await (await fetch("trainer.py")).text();
           pyodide.runPython(python_code);
+          document.getElementById("test-data-button").disabled = false;
+          document.getElementById("successful-training-message").innerHTML =
+            "Treinamento realizado com sucesso";
         } catch (err) {
+          document.getElementById("error-training-message").innerHTML =
+            "Houve algum erro com o treinamento, tente novamente com outra base";
           console.log(err);
         }
       }
@@ -96,8 +120,12 @@
             document.body.append(predicao);
           }
           predicao.innerHTML = "<p>A prediçao é: " + result + "</p>";
+          document.getElementById("error-message").innerHTML = "";
         } catch (err) {
           console.log(err);
+          document.getElementById("error-message").innerHTML =
+            "Valor inválido ou incorreto";
+          predicao.innerHTML = "";
         }
       }
 
