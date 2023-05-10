@@ -30,3 +30,11 @@ Para fazer uma predição basta digitar todas categorias separadas por virgula e
 Caso estiver interessado em mais detalhes segue o relatório: 
 
 >https://docs.google.com/document/d/1sMmgiwGpjdHXRgdhbPP_Z4JQI-lJ-CO538W8zOuL0VA/edit
+
+
+# vídeo de demostração 
+
+
+https://github.com/jhenry0/naive_bayes/assets/48894175/f0f3df0a-3708-4063-85bc-c820a4a04405
+
+
