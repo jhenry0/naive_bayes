@@ -25,12 +25,6 @@ Agora que seu csv está pronto basta clicar no botão de inserir dados e escolhe
 
 Para fazer uma predição basta digitar todas categorias separadas por virgula e sem o valor da classe. 
 
-# Relatório
-
-Caso estiver interessado em mais detalhes segue o relatório: 
-
->https://docs.google.com/document/d/1sMmgiwGpjdHXRgdhbPP_Z4JQI-lJ-CO538W8zOuL0VA/edit
-
 
 # vídeo de demostração 
 
